@@ -23,9 +23,10 @@ var port string = "5555"
 func main() {
 	parseConfig()
 	http.HandleFunc("/payload", handlePayload)
+	fmt.Println("Listening on http://localhost:" + port)
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
-		log.Fatal("Server start failed!")
+		log.Fatal(err)
 	}
 }
 
@@ -42,6 +43,7 @@ func parseConfig() {
 		log.Fatal(error)
 	}
 	pathRepo = conf.PathRepo
+	port = conf.Port
 }
 
 func handlePayload(writer http.ResponseWriter, request *http.Request) {
