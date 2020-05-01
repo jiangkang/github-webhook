@@ -11,12 +11,19 @@ import (
 
 type HookConfig struct {
 	PathRepo string `json:"path_repo"`
+	Port     string `json:"port"`
+	HookCmd  string `json:"hook_cmd"`
 }
+
+// 绝对路径
+var pathRepo string
+
+var port string = "5555"
 
 func main() {
 	parseConfig()
 	http.HandleFunc("/payload", handlePayload)
-	err := http.ListenAndServe(":5555", nil)
+	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal("Server start failed!")
 	}
@@ -37,9 +44,6 @@ func parseConfig() {
 	pathRepo = conf.PathRepo
 }
 
-// 绝对路径
-var pathRepo string
-
 func handlePayload(writer http.ResponseWriter, request *http.Request) {
 	var event = request.Header.Get("X-Github-Event")
 	switch event {
@@ -49,4 +53,3 @@ func handlePayload(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println("git pull done!")
 	}
 }
-
